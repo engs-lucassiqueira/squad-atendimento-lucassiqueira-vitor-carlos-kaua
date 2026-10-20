@@ -45,29 +45,43 @@ struct FilaPacientes {
     // TODO 1: Implemente enqueue(nome, urgencia)
     //         Paciente entra no final da fila
     void enqueue(const string& nome, int urgencia) {
-        // Dica: crie um novo No, atualize 'tras' e 'frente' se necessário
-        // ...
+        No* novo = new No(nome, urgencia);
+        if (isEmpty()) {
+            frente = novo;
+            tras = novo;
+        } else {
+            tras->prox = novo;
+            tras = novo;
+        }
     }
 
     // TODO 2: Implemente dequeue()
     //         Remove e retorna o nome do paciente na frente da fila
     string dequeue() {
-        // Dica: guarde o nome antes de deletar, atualize 'frente'
-        //       se frente ficar nullptr, atualize 'tras' também!
-        return "";  // substitua pelo retorno correto
+        if (isEmpty()) return "";
+        No* removido = frente;
+        string nome = removido->nome;
+        frente = frente->prox;
+        if (frente == nullptr) tras = nullptr;
+        delete removido;
+        return nome;
     }
 
     // TODO 3: Implemente frente_peek() — ver quem está na frente sem remover
     string frente_peek() const {
-        return "";  // substitua pelo retorno correto
+        if (isEmpty()) return "";
+        return frente->nome;
     }
 
     bool isEmpty() const { return frente == nullptr; }
 
     // BÔNUS: Implemente tamanho() que conta os nós na fila
     int tamanho() const {
-        // ...
-        return 0;
+        int quantidade = 0;
+        for (No* atual = frente; atual != nullptr; atual = atual->prox) {
+            quantidade++;
+        }
+        return quantidade;
     }
 
     ~FilaPacientes() {
@@ -160,7 +174,7 @@ struct ListaMedicos {
 //          ATENÇÃO: não destrua o histórico ao imprimir!
 //          Dica: use uma pilha auxiliar para preservar os dados
 void imprimirHistorico(PilhaHistorico& hist) {
-    cout << "\n=== Relatório de Atendimentos ===\n";
+    cout << "\n=== Relatorio de Atendimentos ===\n";
     if (hist.isEmpty()) {
         cout << "(nenhum atendimento registrado)\n";
         return;
@@ -173,9 +187,9 @@ void imprimirHistorico(PilhaHistorico& hist) {
 // ════════════════════════════════════════════════════════════════
 
 int main() {
-    cout << "╔═══════════════════════════════════════════════════╗\n";
-    cout << "║  Sistema de Atendimento — Squad ________________  ║\n";
-    cout << "╚═══════════════════════════════════════════════════╝\n\n";
+    cout << "======================================================\n";
+    cout << "            Sistema de Atendimento - Squad            \n";
+    cout << "======================================================\n\n";
 
     // Crie as estruturas
     FilaPacientes  fila;
@@ -186,7 +200,7 @@ int main() {
     medicos.adicionarMedico("Dra. Ana Lima");
     medicos.adicionarMedico("Dr. Bruno Costa");
     medicos.adicionarMedico("Dra. Carla Ramos");
-    medicos.percorrer("Médicos disponíveis");
+    medicos.percorrer("Medicos disponiveis");
 
     // ── Pacientes chegam na fila (R1) ─────────────────────────
     cout << "\nPacientes chegando:\n";
@@ -195,11 +209,11 @@ int main() {
     fila.enqueue("Gabriel (urgencia=2)", 2);
     fila.enqueue("Helena (urgencia=1)", 1);
 
-    cout << "Próximo a ser atendido: " << fila.frente_peek() << "\n";
+    cout << "Proximo a ser atendido: " << fila.frente_peek() << "\n";
     cout << "Total na fila: " << fila.tamanho() << "\n";
 
     // ── Simulação de atendimentos ─────────────────────────────
-    cout << "\nSimulação de atendimentos:\n";
+    cout << "\nSimulacao de atendimentos:\n";
     int atend = 1;
     while (!fila.isEmpty() && medicos.temMedico()) {
         string paciente = fila.dequeue();
@@ -217,13 +231,13 @@ int main() {
     }
 
     // ── Último atendimento (peek na pilha) ────────────────────
-    cout << "\nÚltimo atendimento registrado (peek): " << historico.peek() << "\n";
+    cout << "\nUltimo atendimento registrado (peek): " << historico.peek() << "\n";
 
     // ── Relatório final (R4) ──────────────────────────────────
     imprimirHistorico(historico);
 
     // ── Commit sugerido ──────────────────────────────────────
-    cout << "\n💡 Lembrete de commits:\n";
+    cout << "\nLembrete de commits:\n";
     cout << "  git add atendimento_template.cpp README.md\n";
     cout << "  git commit -m \"feat: sistema de atendimento integrado (R1-R4)\"\n";
     cout << "  git push origin main\n";

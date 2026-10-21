@@ -207,12 +207,25 @@ struct ListaMedicos {
 //          Dica: use uma pilha auxiliar para preservar os dados
 void imprimirHistorico(PilhaHistorico& hist) {
     cout << "\n=== Relatorio de Atendimentos ===\n";
+
     if (hist.isEmpty()) {
         cout << "(nenhum atendimento registrado)\n";
         return;
     }
-    // ...
+
+    PilhaHistorico auxiliar;
+
+    while (!hist.isEmpty()) {
+        string atendimento = hist.pop();
+        cout << atendimento << "\n";
+        auxiliar.push(atendimento);
+    }
+
+    while (!auxiliar.isEmpty()) {
+        hist.push(auxiliar.pop());
+    }
 }
+
 
 // ════════════════════════════════════════════════════════════════
 // PROGRAMA PRINCIPAL — integra as 4 estruturas
